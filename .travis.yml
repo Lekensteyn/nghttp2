@@ -24,6 +24,7 @@ before_install:
       libevent-dev
       libjansson-dev
       libjemalloc-dev
+      gdb
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
   - $CC --version
 before_script:
@@ -33,4 +34,4 @@ before_script:
   - ./configure --enable-werror
 script:
   - make
-  - make check
+  - make check || (cd src; LD_LIBRARY_PATH=../lib/.libs gdb .libs/nghttpx-unittest -ex run -ex bt -batch; exit 2)
